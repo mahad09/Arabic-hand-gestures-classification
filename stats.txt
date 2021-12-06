@@ -1,0 +1,13 @@
+Model Results
+
+
+Model Name: training_loss, training_accuracy, validation_loss, validation_accuracy, description
+
+VGG16: 0.0184, 0.9947, 0.3681, 0.9117, Performing best among all.
+MobileNet: 0.0529, 0.9836, 1.336, 0.7238, Performing good but validation accuracy is a bit low.
+Xception: 0.3244, 0.8989, 1.1945, 0.6844, Performing good but validation accuracy is low.
+InceptionV3: nan, 0.0638, nan, 0.0673, Performing really bad not suitable in this case.
+
+
+
+
