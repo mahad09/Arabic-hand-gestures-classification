@@ -2,16 +2,14 @@ import os
 import cv2
 import shutil
 import random
-import pdb
-import numpy as np
 from tqdm import tqdm
 from tensorflow import keras
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Model, load_model
-from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+from tensorflow.keras.utils import plot_model
+from sklearn.metrics import classification_report, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 REFINED_DATASET_PATH = 'preprocessed_dataset'
 BATCH_SIZE = 64
@@ -33,6 +31,11 @@ def data_generators():
 
 def model_loading():
   model = load_model('results/EfficientNetB4_results/EfficientNetB4_trained_model.h5')
+
+  with open('modelsummary.txt', 'w') as f:
+    model.summary(print_fn=lambda x: f.write(x + '\n'))
+
+  plot_model(model, to_file='model.png', show_shapes=True)
 
   return model
 
@@ -60,8 +63,6 @@ def model_evaluation(model, validation_generator, train_generator):
       counter += 1
     print(counter)
 
-  pdb.set_trace()
-    
   print(cnf_matrix(actual, testing))
   print(classification_report(actual, testing))
 
@@ -74,7 +75,7 @@ def cnf_matrix(actual, predict):
 
 
 
-train_generator, validation_generator = data_generators()
+# train_generator, validation_generator = data_generators()
 model = model_loading()
 y_pred = model_evaluation(model, validation_generator, train_generator)
 

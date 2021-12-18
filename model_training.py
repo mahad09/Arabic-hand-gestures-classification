@@ -2,17 +2,14 @@ import os
 import cv2
 import shutil
 import random
-import pdb
 import numpy as np
 from tqdm import tqdm
 from tensorflow import keras
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.applications import InceptionV3, MobileNet, ResNet50, VGG16, Xception, InceptionResNetV2, EfficientNetB4
+from tensorflow.keras.applications import EfficientNetB4
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.callbacks import ModelCheckpoint, CSVLogger, EarlyStopping 
-from sklearn.metrics import classification_report, confusion_matrix
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -66,7 +63,7 @@ def data_generators():
 
 def model_architecture_compilation():
   print('model compilation...')
-  base_model = VGG16(weights='imagenet', include_top=False)
+  base_model = EfficientNetB4(weights='imagenet', include_top=False)
   x = base_model.output
   x = GlobalAveragePooling2D()(x)
   x = Dense(1024, activation='relu')(x)
@@ -125,13 +122,6 @@ def model_training(train_generator, validation_generator, callbacks):
   return history, model
 
 
-def model_evaluation(model, validation_generator):
-  Y_pred = model.predict_generator(validation_generator, validation_generator.samples // BATCH_SIZE+1)
-  y_pred = np.argmax(Y_pred, axis=1)
-
-  return y_pred
-
-
 def plot_accuracy(history):
     plt.title("Accuracy Graph")
     plt.plot(history.history['accuracy'])
@@ -161,7 +151,6 @@ train_generator, validation_generator = data_generators()
 model = model_architecture_compilation()
 callbacks = training_callbacks()
 history, model = model_training(train_generator, validation_generator, callbacks)
-y_pred = model_evaluation(model, validation_generator)
 
 # model evaluation and results (3rd milestone)
 plot_accuracy(history)
